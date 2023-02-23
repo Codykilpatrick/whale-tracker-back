@@ -9,6 +9,6 @@ const { decodeUserFromToken, checkAuth } = middleware
 
 /*---------- Protected Routes ----------*/
 router.use(decodeUserFromToken)
-router.get('/point', checkAuth, pointsCtrl.createPoint)
+router.post('/point', checkAuth, pointsCtrl.createPoint)
 
 module.exports = router
