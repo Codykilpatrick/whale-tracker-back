@@ -9,26 +9,32 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      owner: {
-        type: Sequelize.NUMBER
+      ownerId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Profiles',
+          key: 'id'
+        } 
       },
       latitude: {
-        type: Sequelize.NUMBER
+        type: Sequelize.FLOAT
       },
       longitude: {
-        type: Sequelize.NUMBER
+        type: Sequelize.FLOAT
       },
       depth: {
-        type: Sequelize.NUMBER
+        type: Sequelize.ARRAY(Sequelize.INTEGER)
       },
       salinity: {
-        type: Sequelize.NUMBER
+        type: Sequelize.ARRAY(Sequelize.FLOAT)
       },
       temperature: {
-        type: Sequelize.NUMBER
+        type: Sequelize.ARRAY(Sequelize.FLOAT)
       },
       soundspeed: {
-        type: Sequelize.NUMBER
+        type: Sequelize.ARRAY(Sequelize.FLOAT)
       },
       createdAt: {
         allowNull: false,

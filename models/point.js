@@ -11,10 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Point.belongsTo(models.Profile, {
+        foreignKey: 'ownerId'
+      })
     }
   }
   Point.init({
-    owner: {
+    ownerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       onDelete: 'CASCADE',
@@ -28,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     depth: DataTypes.ARRAY(DataTypes.INTEGER),
     salinity: DataTypes.ARRAY(DataTypes.FLOAT),
     temperature: DataTypes.ARRAY(DataTypes.FLOAT),
-    soundspeed: DataTypes.ARRAY(DataTypes.FLOAT)
+    soundspeed: DataTypes.ARRAY(DataTypes.FLOAT),
   }, {
     sequelize,
     modelName: 'Point',
