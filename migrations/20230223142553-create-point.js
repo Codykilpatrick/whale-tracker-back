@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.FLOAT
       },
       depth: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER)
+        type: Sequelize.ARRAY(Sequelize.FLOAT)
       },
       salinity: {
         type: Sequelize.ARRAY(Sequelize.FLOAT)

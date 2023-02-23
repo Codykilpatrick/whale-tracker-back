@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     latitude: DataTypes.FLOAT,
     longitude: DataTypes.FLOAT,
-    depth: DataTypes.ARRAY(DataTypes.INTEGER),
+    depth: DataTypes.ARRAY(DataTypes.FLOAT),
     salinity: DataTypes.ARRAY(DataTypes.FLOAT),
     temperature: DataTypes.ARRAY(DataTypes.FLOAT),
     soundspeed: DataTypes.ARRAY(DataTypes.FLOAT),

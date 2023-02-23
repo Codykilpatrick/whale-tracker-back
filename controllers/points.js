@@ -45,10 +45,23 @@ async function createPoint(req, res) {
     req.body.lat = 22.9
     req.body.long = -43.1
     Promise.resolve(oceanDataFetch(req, res)).then(measurements => {
-      for (let i = 0; i < measurements.length; i++){
-        console.log(measurements[i]);
-        Point.create(measurements[i])
+      let finalObj = {
+        latitude: measurements[0].latitude,
+        longitude: measurements[0].longitude,
+        ownerId: measurements[0].ownerId,
+        depth: [],
+        temperature: [],
+        salinity: [],
+        soundSpeed: []
       }
+      for (let i = 0; i < measurements.length; i++){
+        finalObj.depth.push(measurements[i].depth)
+        finalObj.temperature.push(measurements[i].temperature)
+        finalObj.salinity.push(measurements[i].salinity)
+        finalObj.soundSpeed.push(measurements[i].soundSpeed)
+      }
+      console.log(finalObj);
+      Point.create(finalObj)
     })
   } catch (error) {
     console.log(error);
