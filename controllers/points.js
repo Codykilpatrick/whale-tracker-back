@@ -1,6 +1,6 @@
 const { Point } = require('../models')
 
-const depthsArray = [0, 10, 20]
+const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 const coolPromiseArray = []
 const finalArray = []
 
@@ -14,7 +14,7 @@ async function oceanDataFetch(req, res) {
       const coolValues = values.map(value => value.json())
       return Promise.all(coolValues).then((coolvalues) => {
         for (let i = 0; i < coolValues.length; i++){
-          if (coolvalues[i].point.on_land) return res.status(500).json("Invalid point!")
+          if (coolvalues[0].point.on_land) return res.status(500).json("Invalid point!")
           // console.log(coolvalues[i].point.on_land);
           let metrics = {}
           metrics.latitude = req.body.lat
@@ -44,17 +44,19 @@ async function createPoint(req, res) {
   try {
     req.body.lat = 22.9
     req.body.long = -43.1
+    req.body.ownerId = req.user.profile.id
     Promise.resolve(oceanDataFetch(req, res)).then(measurements => {
       let finalObj = {
-        latitude: measurements[0].latitude,
-        longitude: measurements[0].longitude,
-        ownerId: measurements[0].ownerId,
+        latitude: req.body.lat,
+        longitude: req.body.long,
+        ownerId: req.body.ownerId,
         depth: [],
         temperature: [],
         salinity: [],
         soundSpeed: []
       }
       for (let i = 0; i < measurements.length; i++){
+        if (measurements[i].temperature === null) return
         finalObj.depth.push(measurements[i].depth)
         finalObj.temperature.push(measurements[i].temperature)
         finalObj.salinity.push(measurements[i].salinity)
