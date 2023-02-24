@@ -11,6 +11,6 @@ const { decodeUserFromToken, checkAuth } = middleware
 router.use(decodeUserFromToken)
 router.post('/', checkAuth, pointsCtrl.createPoint)
 router.get('/', checkAuth, pointsCtrl.index)
-router.delete('/:id', pointsCtrl.delete)
+router.delete('/:id/delete', pointsCtrl.delete)
 
 module.exports = router

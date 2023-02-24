@@ -1,5 +1,5 @@
 const { Point } = require('../models')
-const depthsArray = [0, 10, 20,]
+const depthsArray = [0, 10, 20]
 // const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 let coolPromiseArray = []
 let finalArray = []
