@@ -4,6 +4,7 @@ const logger = require('morgan')
 const cors = require('cors')
 const formData = require('express-form-data')
 
+
 const profilesRouter = require('./routes/profiles.js')
 const authRouter = require('./routes/auth.js')
 const pointsRouter = require('./routes/points.js')
