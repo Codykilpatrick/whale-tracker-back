@@ -6,7 +6,7 @@ let finalArray = []
 async function oceanDataFetch(req, res) {
   try {
       depthsArray.forEach(depth => {
-      coolPromiseArray.push(fetch(`https://ocean.amentum.io/rtofs?latitude=${req.body.latitude}&longitude=${req.body.longitude}&depth=${depth}`, {headers: {"API-key": "ScgLjETZnRQjXVyuHaLp0Ji4Yg1JZtto"}}))
+      coolPromiseArray.push(fetch(`https://ocean.amentum.io/rtofs?latitude=${req.body.latitude}&longitude=${req.body.longitude}&depth=${depth}`, {headers: {"API-key": `${process.env.OCEAN_DATA_API_KEY}`}}))
     })
     return Promise.all(coolPromiseArray).then((values) => {
       const coolValues = values.map(value => value.json())
