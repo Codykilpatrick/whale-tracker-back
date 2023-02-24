@@ -1,7 +1,9 @@
 const { Point } = require('../models')
-const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+const depthsArray = [0, 10, 20,]
+// const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 let coolPromiseArray = []
 let finalArray = []
+let coolValues
 
 async function oceanDataFetch(req, res) {
   try {
@@ -9,7 +11,7 @@ async function oceanDataFetch(req, res) {
       coolPromiseArray.push(fetch(`https://ocean.amentum.io/rtofs?latitude=${req.body.latitude}&longitude=${req.body.longitude}&depth=${depth}`, {headers: {"API-key": `${process.env.OCEAN_DATA_API_KEY}`}}))
     })
     return Promise.all(coolPromiseArray).then((values) => {
-      const coolValues = values.map(value => value.json())
+      coolValues = values.map(value => value.json())
       return Promise.all(coolValues).then((coolvalues) => {
         for (let i = 0; i < coolValues.length; i++){
           let metrics = {}
@@ -24,10 +26,11 @@ async function oceanDataFetch(req, res) {
           metrics.salinity = coolvalues[i].salinity.value
           //Sound Speed in Ft/Sec
           metrics.soundSpeed = (4427.2 + 11.962*(metrics.temperature) - 0.0553*(metrics.temperature * metrics.temperature) + 4.562*(metrics.salinity-35) + 0.016*(metrics.depth))
-          console.log("metrics", metrics);
+          // console.log("metrics", metrics);
           finalArray.push(metrics)
         }
-        console.log("finalARRAY", finalArray);
+        // console.log("finalARRAY", finalArray);
+        coolPromiseArray = []
         return finalArray
       })
     });
@@ -39,6 +42,9 @@ async function oceanDataFetch(req, res) {
 async function createPoint(req, res) {
   try {
     req.body.ownerId = req.user.profile.id
+    req.body.latitude = parseFloat(req.body.latitude)
+    req.body.longitude = parseFloat(req.body.longitude)
+    console.log("REQ.BODY", req.body);
     let finalObj = {
       latitude: req.body.latitude,
       longitude: req.body.longitude,
