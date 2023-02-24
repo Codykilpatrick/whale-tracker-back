@@ -79,7 +79,20 @@ const index = async (req, res) => {
   }
 }
 
+const deletePoint = async (req, res) => {
+  try {
+    const numberOfRowsRemoved = await
+    Point.destroy(
+      {where: {id: req.params.id}}
+    )
+    res.status(200).json(numberOfRowsRemoved)
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   createPoint,
   index,
+  delete: deletePoint
 }
