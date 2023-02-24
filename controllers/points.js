@@ -65,7 +65,21 @@ async function createPoint(req, res) {
   }
 }
 
+const index = async (req, res) => {
+  try {
+    const points = await Point.findAll({
+      where: {
+        ownerId: req.user.profile.id
+      }
+    })
+    res.status(200).json(points)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
+  }
+}
 
 module.exports = {
   createPoint,
+  index,
 }
