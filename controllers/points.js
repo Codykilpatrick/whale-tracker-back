@@ -1,19 +1,20 @@
 const { Point } = require('../models')
-const depthsArray = [0, 10, 20]
-// const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+// const depthsArray = [0, 10, 20]
+const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 let coolPromiseArray = []
-let finalArray = []
 let coolValues
 
 async function oceanDataFetch(req, res) {
+  let finalArray = []
   try {
-      depthsArray.forEach(depth => {
+    depthsArray.forEach(depth => {
       coolPromiseArray.push(fetch(`https://ocean.amentum.io/rtofs?latitude=${req.body.latitude}&longitude=${req.body.longitude}&depth=${depth}`, {headers: {"API-key": `${process.env.OCEAN_DATA_API_KEY}`}}))
     })
     return Promise.all(coolPromiseArray).then((values) => {
       coolValues = values.map(value => value.json())
       return Promise.all(coolValues).then((coolvalues) => {
         for (let i = 0; i < coolValues.length; i++){
+          if (coolvalues[i].point.depth === null || coolvalues[i].salinity.value === null|| !coolvalues[i].point.temperature === null || coolvalues[i].on_land === true) break
           let metrics = {}
           metrics.latitude = req.body.latitude
           metrics.longitude = req.body.longitude
