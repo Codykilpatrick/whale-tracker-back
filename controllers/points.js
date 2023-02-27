@@ -1,6 +1,6 @@
 const { Point } = require('../models')
-// const depthsArray = [0, 10, 20]
-const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+const depthsArray = [0, 10, 20]
+// const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 let coolPromiseArray = []
 let coolValues
 
@@ -77,7 +77,10 @@ const index = async (req, res) => {
     const points = await Point.findAll({
       where: {
         ownerId: req.user.profile.id
-      }
+      },
+      order: [
+        ['id', 'DESC']
+      ]
     })
     res.status(200).json(points)
   } catch (error) {
