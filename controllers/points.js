@@ -2,40 +2,37 @@ const { Point } = require('../models')
 // Testing array!
 const depthsArray = [0, 10, 20]
 // const depthsArray = [0, 10, 20, 30, 50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
-let coolPromiseArray = []
 let coolValues
 
 async function oceanDataFetch(req, res) {
+  let coolPromiseArray = []
   let finalArray = []
   try {
     depthsArray.forEach(depth => {
       coolPromiseArray.push(fetch(`https://ocean.amentum.io/rtofs?latitude=${req.body.latitude}&longitude=${req.body.longitude}&depth=${depth}`, {headers: {"API-key": `${process.env.OCEAN_DATA_API_KEY}`}}))
     })
-    return Promise.all(coolPromiseArray).then((values) => {
-      coolValues = values.map(value => value.json())
-      return Promise.all(coolValues).then((coolvalues) => {
+    const newCoolPromises = await Promise.all(coolPromiseArray)
+    const coolValues = await Promise.all(newCoolPromises.map(value => value.json()))
+    console.log(coolValues)
         for (let i = 0; i < coolValues.length; i++){
-          if (coolvalues[i].point.depth === null || coolvalues[i].salinity.value === null|| !coolvalues[i].point.temperature === null || coolvalues[i].on_land === true) break
+          if (coolValues[i].point.depth === null || coolValues[i].salinity.value === null|| !coolValues[i].point.temperature === null || coolValues[i].on_land === true) break
           let metrics = {}
           metrics.latitude = req.body.latitude
           metrics.longitude = req.body.longitude
           metrics.ownerId = req.user.profile.id
           //DEPTH IN FEET
-          metrics.depth = (coolvalues[i].point.depth *  3.280839895)
+          metrics.depth = (coolValues[i].point.depth *  3.280839895)
           //TEMP in F
-          metrics.temperature = (coolvalues[i].temperature.value * 1.8) + 32
+          metrics.temperature = (coolValues[i].temperature.value * 1.8) + 32
           //Salinity in PPT
-          metrics.salinity = coolvalues[i].salinity.value
+          metrics.salinity = coolValues[i].salinity.value
           //Sound Speed in Ft/Sec
           metrics.soundSpeed = (4427.2 + 11.962*(metrics.temperature) - 0.0553*(metrics.temperature * metrics.temperature) + 4.562*(metrics.salinity-35) + 0.016*(metrics.depth))
           // console.log("metrics", metrics);
           finalArray.push(metrics)
         }
         // console.log("finalARRAY", finalArray);
-        coolPromiseArray = []
         return finalArray
-      })
-    });
   } catch (error) {
     console.log(error);
   }
@@ -57,15 +54,15 @@ async function createPoint(req, res) {
       salinity: [],
       soundspeed: []
     }
-    Promise.resolve(await oceanDataFetch(req, res)).then(measurements => {
+    const measurements = await oceanDataFetch(req, res)
       for (let i = 0; i < measurements.length; i++){
-        if (measurements[i].temperature === null) return
+        if (measurements[i].temperature === null) continue
         finalObj.depth.push(measurements[i].depth)
         finalObj.temperature.push(measurements[i].temperature)
         finalObj.salinity.push(measurements[i].salinity)
         finalObj.soundspeed.push(measurements[i].soundSpeed)
       }
-    })
+
     const createdPoint = await Point.create(finalObj)
     res.status(200).json(createdPoint)
   } catch (error) {
