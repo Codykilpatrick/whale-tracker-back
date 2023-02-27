@@ -43,6 +43,7 @@ async function oceanDataFetch(req, res) {
 
 async function createPoint(req, res) {
   try {
+    console.log(req.body);
     req.body.ownerId = req.user.profile.id
     req.body.latitude = parseFloat(req.body.latitude)
     req.body.longitude = parseFloat(req.body.longitude)
